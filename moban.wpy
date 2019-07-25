@@ -1,0 +1,103 @@
+<template lang="wxml" minapp="wepy">
+   <view class="container">
+     <!-- 整个导航 -->
+    <view class="nav" style="padding-top:{{paddingNav}};height:{{navheight}}">
+      <!-- 和胶囊高度保持一直的块元素 -->
+      <view  class="capsuleHeight" style="height:{{capsuleHeight}}">
+        <!-- 块元素中的标题 -->
+        <view class="navTittle" style="line-height:{{capsuleHeight}}">
+          <view class="navTittleText">标题</view>
+        </view>
+        <!-- 块元素中的返回按钮 -->
+        <view class="backOne" style="height:{{capsuleHeight}}" @tap="backOne">
+           <image class="backOneImg" src="https://h5.jinghu.aoqq.com/miniApp/assets/homeImg/back@2x.png" />
+        </view>
+      </view>
+    </view>
+    <!-- 内容 -->
+    <view class="content" style="margin-top:{{contentHeight}}">在这里可以正常写内容</view>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy'
+
+export default class myBankCard extends wepy.page {
+  config = {
+    navigationStyle: 'custom'
+  };
+  data = {
+    paddingNav: '', // 动态设置顶部返回按钮和文字距离头部的高度
+    navheight: '', // 整个导航高度
+    capsuleHeight: '', // 动态设置头部固定栏内标题和返回一行的高度
+    contentHeight: '' // 动态设置头部到内容的距离
+  };
+  onLoad() {
+    this.gethight()
+  }
+  // 1. 获取胶囊高度
+  gethight() {
+    const res = wx.getMenuButtonBoundingClientRect()
+    console.log(res)
+    // 2. 手机顶部到胶囊顶部的距离
+    this.paddingNav = res.top + 'px'
+    // 3.动态设置整个导航的高度
+    this.navheight = res.height + 6 + 'px'
+    // 4.动态设置和胶囊高度一致的在导航内的块元素
+    this.capsuleHeight = res.height + 'px'
+    // 4.动态设置头部到内容的距离
+    this.contentHeight = res.bottom + 6 + 'px'
+  }
+
+  methods = {
+    // 1.点击返回上一层  如果要多层 改变delta的值 。如果delta大于返回页的个数，则返回home
+    backOne() {
+      wepy.navigateBack({
+        delta: 1
+      })
+    }
+  };
+}
+</script>
+<style lang="less">
+page {
+  height: 100%;
+  background-color: skyblue;
+  width: 100%;
+}
+.container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  // 头部navigationBar
+  .nav {
+    width: 100%;
+    position: fixed;
+    background-color: #fff;
+    .capsuleHeight {
+      overflow: hidden;
+      position: relative;
+      .navTittle {
+        padding: 0 80rpx 0 80rpx;
+        text-align: center;
+      }
+      .backOne {
+        position: absolute;
+        top: 0;
+        width: 40px;
+        .backOneImg {
+          width: 12px;
+          margin-left: 15px;
+          height: 20px;
+          position: absolute;
+          top: 5px;
+        }
+      }
+    }
+  }
+  // 内容
+  .content {
+    color: yellow;
+  }
+}
+</style>
